@@ -1,0 +1,54 @@
+:root {
+  --color-blue-01: #e4edff;
+  --color-blue-02: #c5d9ff;
+  --color-blue-03: #a2c1ff;
+  --color-blue-04: #5590ff;
+  --color-blue-05: #0055f5;
+  --color-blue-06: #0037a3;
+  --color-blue-07: #001b51;
+  --color-white-00: #ffffff;
+  --color-gray-01: #fafafa;
+  --color-gray-02: #e0eeff;
+  --color-gray-03: #a6b7cb;
+  --color-gray-04: #677b93;
+  --color-gray-05: #485668;
+  --color-gray-06: #29313c;
+  --color-gray-07: #121416;
+  --color-red-01: #ff5656;
+
+  --font-family-base:
+    "Pretendard", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-extrabold: 800;
+
+  --font-display-large-line: 56px;
+
+  --font-heading-large-line: 40px;
+
+  --font-heading-medium-size: 24px;
+  --font-heading-medium-line: 32px;
+
+  --font-heading-small-size: 20px;
+  --font-heading-small-line: 28px;
+
+  --font-body-large-size: 18px;
+  --font-body-large-line: 28px;
+
+  --font-body-medium-size: 16px;
+  --font-body-medium-line: 24px;
+
+  --font-body-small-size: 14px;
+  --font-body-small-line: 20px;
+
+  --font-field-medium-size: 16px;
+  --font-field-medium-line: 24px;
+
+  --font-action-medium-size: 16px;
+  --font-action-medium-line: 24px;
+
+  --font-action-small-size: 16px;
+  --font-action-small-line: 24px;
+}
