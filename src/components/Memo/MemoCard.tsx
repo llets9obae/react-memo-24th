@@ -1,23 +1,48 @@
 // src/components/Memo/MemoCard.tsx
-import React from 'react';
-import type { Memo } from '../../types/memo';
+import "./MemoCard.css";
+import starIcon from "../../assets/icons/star.svg";
 
-interface MemoCardProps {
-  memo: Memo;
+export interface MemoItem {
+  id: string;
+  title: string;
+  content: string;
+  category: "Work" | "Daily" | "Others";
+  date: string;
+  isPinned: boolean;
 }
 
-export const MemoCard: React.FC<MemoCardProps> = ({ memo }) => {
-  const categoryClass = `card-${memo.category.toLowerCase()}`;
+interface MemoCardProps {
+  memo: MemoItem;
+}
+
+export const MemoCard = ({ memo }: MemoCardProps) => {
+  const categoryClass = memo.category.toLowerCase();
 
   return (
     <article className={`memo-card ${categoryClass}`}>
-      <div className="card-header">
-        <h2 className="card-title">{memo.title}</h2>
+      <div>
+        <div className="card-header">
+          <h3 className="card-title">{memo.title}</h3>
+          <button type="button" className="star-btn" aria-label="고정">
+            <img
+              src={starIcon}
+              alt="별"
+              style={{
+                width: "18px",
+                height: "18px",
+                filter: memo.isPinned
+                  ? "brightness(0) invert(1)"
+                  : "opacity(0.4)",
+              }}
+            />
+          </button>
+        </div>
+        <p className="card-content">{memo.content}</p>
       </div>
-      <p className="card-content">{memo.content}</p>
+
       <div className="card-footer">
-        <span className="category-name">{memo.category}</span>
-        <time className="card-date">{memo.date}</time>
+        <span>{memo.category}</span>
+        <span>{memo.date}</span>
       </div>
     </article>
   );

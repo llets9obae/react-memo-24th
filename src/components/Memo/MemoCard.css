@@ -1,0 +1,80 @@
+/* src/components/Memo/MemoCard.css */
+
+.memo-card {
+  height: 280px;
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.memo-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.memo-card.work {
+  background-color: var(--color-blue-06);
+  color: var(--color-white-00);
+}
+
+.memo-card.daily {
+  background-color: var(--color-blue-04);
+  color: var(--color-white-00);
+}
+
+.memo-card.others {
+  background-color: var(--color-gray-03);
+  color: var(--color-white-00);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.card-title {
+  font-size: var(--font-body-large-size);
+  font-weight: var(--font-weight-semibold);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.star-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+.card-content {
+  font-size: var(--font-body-small-size);
+  line-height: var(--font-body-medium-line);
+  opacity: 0.9;
+  flex: 1;
+  overflow: hidden;
+  display: -webkit-box;
+  line-clamp: 6;
+  -webkit-line-clamp: 6;
+  -webkit-box-orient: vertical;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  margin-top: 16px;
+  opacity: 0.8;
+}
