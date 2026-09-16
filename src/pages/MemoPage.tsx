@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import "./MemoPage.css";
-
 import { MemoToolbar } from "../components/Memo/MemoToolbar";
 import type { ComponentProps } from "react";
+import { SearchResultEmpty } from "../components/Memo/SearchResultEmpty";
 
 type TagType = ComponentProps<typeof MemoToolbar>["selectedTag"];
 
@@ -65,6 +65,8 @@ export const MemoPage = () => {
   const pinnedMemos = filteredMemos.filter((m) => m.isPinned);
   const unpinnedMemos = filteredMemos.filter((m) => !m.isPinned);
 
+  const isFiltering = searchQuery.trim() !== "" || selectedTag !== "ALL";
+
   return (
     <div className="memo-app-container">
       <MemoToolbar
@@ -74,8 +76,15 @@ export const MemoPage = () => {
         onSearchChange={setSearchQuery}
       />
 
+      {/* 필터링 결과가 0개일 때의 분기 처리 */}
       {filteredMemos.length === 0 ? (
-        <EmptyState />
+        isFiltering ? (
+          /* 검색/태그 필터 결과가 없을 때 */
+          <SearchResultEmpty />
+        ) : (
+          /* 메모 데이터 자체가 아예 0개일 때 */
+          <EmptyState />
+        )
       ) : (
         <div
           style={{
@@ -85,7 +94,7 @@ export const MemoPage = () => {
             gap: "24px",
           }}
         >
-          {/* 고정 메모리 구역 (4열 그리드) */}
+          {/* 고정 메모리 구역 */}
           {pinnedMemos.length > 0 && (
             <div className="memo-grid">
               {pinnedMemos.map((memo) => (
@@ -98,7 +107,7 @@ export const MemoPage = () => {
             </div>
           )}
 
-          {/* 일반 메모리 구역 (4열 그리드) */}
+          {/* 일반 메모리 구역 */}
           {unpinnedMemos.length > 0 && (
             <div className="memo-grid">
               {unpinnedMemos.map((memo) => (
