@@ -1,14 +1,16 @@
 import { useState, useEffect } from "react";
 import "./MemoPage.css";
+
 import { MemoToolbar } from "../components/Memo/MemoToolbar";
 import type { ComponentProps } from "react";
-import { SearchResultEmpty } from "../components/Memo/SearchResultEmpty";
 
 type TagType = ComponentProps<typeof MemoToolbar>["selectedTag"];
 
 import { EmptyState } from "../components/Memo/EmptyState";
 import { MemoCard } from "../components/Memo/MemoCard";
 import type { MemoItem } from "../components/Memo/MemoCard";
+import { SearchResultEmpty } from "../components/Memo/SearchResultEmpty";
+import { MemoDetailModal } from "../components/Memo/MemoDetailModal"; // 👈 모달 추가
 
 import { INITIAL_MEMOS } from "../constants/mockData";
 
@@ -25,19 +27,19 @@ export const MemoPage = () => {
         console.error("스토리지 파싱 실패:", error);
       }
     }
-
     return Array.isArray(INITIAL_MEMOS) ? INITIAL_MEMOS : [];
   });
 
   const [selectedTag, setSelectedTag] = useState<TagType>("ALL" as TagType);
   const [searchQuery, setSearchQuery] = useState("");
 
-  // localStorage 자동 저장
+  // 👈 현재 열람 중인 메모 상태 (null이면 모달 닫힘)
+  const [selectedMemo, setSelectedMemo] = useState<MemoItem | null>(null);
+
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(memos));
   }, [memos]);
 
-  // 고정 토글 함수
   const handleTogglePin = (id: string) => {
     setMemos((prev) =>
       prev.map((memo) =>
@@ -46,7 +48,14 @@ export const MemoPage = () => {
     );
   };
 
-  // 1. 태그 필터 + 대소문자 무시 검색 적용
+  // 메모 삭제 핸들러 (모달 내 휴지통 클릭 시)
+  const handleDeleteMemo = (id: string) => {
+    setMemos((prev) => prev.filter((memo) => memo.id !== id));
+    setSelectedMemo(null);
+  };
+
+  const isFiltering = searchQuery.trim() !== "" || selectedTag !== "ALL";
+
   const filteredMemos = memos.filter((memo) => {
     const matchesTag =
       selectedTag === "ALL" ||
@@ -61,11 +70,8 @@ export const MemoPage = () => {
     return matchesTag && matchesQuery;
   });
 
-  // 2. 고정 메모리와 일반 메모리 분리 (행 분리용)
   const pinnedMemos = filteredMemos.filter((m) => m.isPinned);
   const unpinnedMemos = filteredMemos.filter((m) => !m.isPinned);
-
-  const isFiltering = searchQuery.trim() !== "" || selectedTag !== "ALL";
 
   return (
     <div className="memo-app-container">
@@ -76,13 +82,10 @@ export const MemoPage = () => {
         onSearchChange={setSearchQuery}
       />
 
-      {/* 필터링 결과가 0개일 때의 분기 처리 */}
       {filteredMemos.length === 0 ? (
         isFiltering ? (
-          /* 검색/태그 필터 결과가 없을 때 */
           <SearchResultEmpty />
         ) : (
-          /* 메모 데이터 자체가 아예 0개일 때 */
           <EmptyState />
         )
       ) : (
@@ -94,7 +97,6 @@ export const MemoPage = () => {
             gap: "24px",
           }}
         >
-          {/* 고정 메모리 구역 */}
           {pinnedMemos.length > 0 && (
             <div className="memo-grid">
               {pinnedMemos.map((memo) => (
@@ -102,12 +104,12 @@ export const MemoPage = () => {
                   key={memo.id}
                   memo={memo}
                   onTogglePin={handleTogglePin}
+                  onClick={() => setSelectedMemo(memo)} // 👈 카드 클릭 시 모달 열기
                 />
               ))}
             </div>
           )}
 
-          {/* 일반 메모리 구역 */}
           {unpinnedMemos.length > 0 && (
             <div className="memo-grid">
               {unpinnedMemos.map((memo) => (
@@ -115,11 +117,22 @@ export const MemoPage = () => {
                   key={memo.id}
                   memo={memo}
                   onTogglePin={handleTogglePin}
+                  onClick={() => setSelectedMemo(memo)} // 👈 카드 클릭 시 모달 열기
                 />
               ))}
             </div>
           )}
         </div>
+      )}
+
+      {/* 👈 상세 뷰 모달 렌더링 */}
+      {selectedMemo && (
+        <MemoDetailModal
+          memo={selectedMemo}
+          onClose={() => setSelectedMemo(null)}
+          onDelete={handleDeleteMemo}
+          onEdit={(memo) => alert(`수정: ${memo.title}`)}
+        />
       )}
     </div>
   );
