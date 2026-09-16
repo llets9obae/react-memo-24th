@@ -1,13 +1,19 @@
 import searchIcon from '../../assets/icons/search.svg';
-import { TagDropdown } from './TagDropdown';
-import type { TagType } from './TagDropdown';
+import { TagDropdown, type TagType } from './TagDropdown';
 
 interface MemoSearchBarProps {
   selectedTag: TagType;
   onSelectTag: (tag: TagType) => void;
+  searchQuery: string;
+  onSearchChange: (query: string) => void;
 }
 
-export const MemoSearchBar = ({ selectedTag, onSelectTag }: MemoSearchBarProps) => {
+export const MemoSearchBar = ({
+  selectedTag,
+  onSelectTag,
+  searchQuery,
+  onSearchChange,
+}: MemoSearchBarProps) => {
   return (
     <div className="search-container">
       <TagDropdown selectedTag={selectedTag} onSelectTag={onSelectTag} />
@@ -16,6 +22,8 @@ export const MemoSearchBar = ({ selectedTag, onSelectTag }: MemoSearchBarProps) 
         type="text"
         className="search-input"
         placeholder="원하는 메모를 검색하세요"
+        value={searchQuery}
+        onChange={(e) => onSearchChange(e.target.value)}
       />
 
       <button

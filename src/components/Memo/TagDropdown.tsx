@@ -117,7 +117,7 @@ export const TagDropdown = ({ selectedTag, onSelectTag }: TagDropdownProps) => {
             minWidth: "130px",
           }}
         >
-          {/* 전체 해제 */}
+          {/* 전체 */}
           <li>
             <button
               type="button"
@@ -142,7 +142,7 @@ export const TagDropdown = ({ selectedTag, onSelectTag }: TagDropdownProps) => {
                 cursor: "pointer",
               }}
             >
-              전체 해제
+              전체
             </button>
           </li>
 
