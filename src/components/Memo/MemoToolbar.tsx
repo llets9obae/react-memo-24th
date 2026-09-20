@@ -18,8 +18,12 @@ export const MemoToolbar = ({
   onSearchChange,
   onAddClick,
 }: MemoToolbarProps) => {
+  const iconBtnClass =
+    "flex h-14 w-14 shrink-0 items-center justify-center rounded-full border-none " +
+    "bg-white-00 shadow-[0_2px_6px_rgba(0,0,0,0.04)] cursor-pointer";
+
   return (
-    <header className="top-bar">
+    <header className="flex w-full items-center gap-4 mb-6">
       <MemoSearchBar
         selectedTag={selectedTag}
         onSelectTag={onSelectTag}
@@ -29,23 +33,15 @@ export const MemoToolbar = ({
 
       <button
         type="button"
-        className="icon-btn"
+        className={iconBtnClass}
         aria-label="메모 추가"
         onClick={onAddClick}
       >
-        <img
-          src={plusIcon}
-          alt="추가"
-          style={{ width: "24px", height: "24px" }}
-        />
+        <img src={plusIcon} alt="추가" className="h-6 w-6" />
       </button>
 
-      <button type="button" className="icon-btn" aria-label="내 계정">
-        <img
-          src={profileIcon}
-          alt="계정"
-          style={{ width: "24px", height: "24px" }}
-        />
+      <button type="button" className={iconBtnClass} aria-label="내 계정">
+        <img src={profileIcon} alt="계정" className="h-6 w-6" />
       </button>
     </header>
   );

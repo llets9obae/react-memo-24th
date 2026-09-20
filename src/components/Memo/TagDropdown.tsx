@@ -9,11 +9,15 @@ interface TagDropdownProps {
 }
 
 // 카테고리별 색상 매핑
-const TAG_COLORS: Record<Exclude<TagType, "ALL">, string> = {
-  Daily: "var(--color-blue-04)",
-  Work: "var(--color-blue-06)",
-  Others: "var(--color-gray-03)",
+const TAG_DOT_CLASS: Record<Exclude<TagType, "ALL">, string> = {
+  Daily: "bg-blue-04",
+  Work: "bg-blue-06",
+  Others: "bg-gray-03",
 };
+
+const menuItemClass = (active: boolean) =>
+  `flex w-full items-center gap-2 border-none px-4 py-2.5 text-sm cursor-pointer
+  ${active ? "bg-blue-01 font-semibold text-blue-05" : "bg-transparent font-normal text-blue-07"}`;
 
 export const TagDropdown = ({ selectedTag, onSelectTag }: TagDropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -24,78 +28,38 @@ export const TagDropdown = ({ selectedTag, onSelectTag }: TagDropdownProps) => {
   };
 
   return (
-    <div style={{ position: "relative" }}>
+    <div className="relative">
       {/* 1. 상단 태그 선택 버튼 */}
       <button
         type="button"
-        className="tag-badge"
         onClick={() => setIsOpen((prev) => !prev)}
-        style={{
-          display: "inline-flex",
-          alignItems: "center",
-          gap: "8px",
-          backgroundColor: "var(--color-blue-01)",
-          padding: "6px 14px",
-          borderRadius: "20px",
-          border: "none",
-          cursor: "pointer",
-        }}
+        className="inline-flex cursor-pointer items-center gap-2 rounded-[20px] border-none
+          bg-blue-01 px-3.5 py-1.5"
       >
         {selectedTag === "ALL" ? (
           <>
-            <span
-              style={{
-                fontSize: "15px",
-                fontWeight: 600,
-                color: "var(--color-blue-07)",
-              }}
-            >
+            <span className="text-[15px] font-semibold text-blue-07">
               태그 선택
             </span>
             <img
               src={vectorIcon}
               alt="화살표"
-              style={{
-                width: "16px",
-                height: "13px",
-                /* 닫혔을 때 0deg(오른쪽), 열렸을 때 90deg(아래) */
-                transform: isOpen ? "rotate(90deg)" : "rotate(0deg)",
-                transition: "transform 0.2s ease",
-                flexShrink: 0,
-              }}
+              className={`h-[13px] w-4 shrink-0 transition-transform duration-200 ease-in-out
+                ${isOpen ? "rotate-90" : "rotate-0"}`}
             />
           </>
         ) : (
           <>
             <span
-              style={{
-                width: "8px",
-                height: "8px",
-                borderRadius: "50%",
-                backgroundColor: TAG_COLORS[selectedTag],
-                display: "inline-block",
-                flexShrink: 0,
-              }}
+              className={`inline-block h-2 w-2 shrink-0 rounded-full ${TAG_DOT_CLASS[selectedTag]}`}
             />
-            <span
-              style={{
-                fontSize: "15px",
-                fontWeight: 600,
-                color: "var(--color-blue-07)",
-              }}
-            >
+            <span className="text-[15px] font-semibold text-blue-07">
               {selectedTag}
             </span>
             <img
               src={vectorIcon}
               alt="화살표"
-              style={{
-                width: "16px",
-                height: "13px",
-                transform: isOpen ? "rotate(0deg)" : "rotate(0deg)",
-                transition: "transform 0.2s ease",
-                flexShrink: 0,
-              }}
+              className="h-[13px] w-4 shrink-0 transition-transform duration-200 ease-in-out"
             />
           </>
         )}
@@ -104,43 +68,15 @@ export const TagDropdown = ({ selectedTag, onSelectTag }: TagDropdownProps) => {
       {/* 2. 드롭다운 메뉴 (색상 동그라미 포함) */}
       {isOpen && (
         <ul
-          style={{
-            position: "absolute",
-            top: "48px",
-            left: 0,
-            backgroundColor: "#ffffff",
-            borderRadius: "16px",
-            boxShadow: "0 8px 24px rgba(0, 27, 81, 0.12)",
-            listStyle: "none",
-            padding: "8px 0",
-            zIndex: 100,
-            minWidth: "130px",
-          }}
+          className="absolute top-12 left-0 z-[100] min-w-[130px] list-none rounded-2xl
+            bg-white-00 py-2 shadow-[0_8px_24px_rgba(0,27,81,0.12)]"
         >
           {/* 전체 */}
           <li>
             <button
               type="button"
               onClick={() => handleSelect("ALL")}
-              style={{
-                width: "100%",
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-                padding: "10px 16px",
-                border: "none",
-                background:
-                  selectedTag === "ALL"
-                    ? "var(--color-blue-01)"
-                    : "transparent",
-                color:
-                  selectedTag === "ALL"
-                    ? "var(--color-blue-05)"
-                    : "var(--color-blue-07)",
-                fontWeight: selectedTag === "ALL" ? 600 : 400,
-                fontSize: "14px",
-                cursor: "pointer",
-              }}
+              className={menuItemClass(selectedTag === "ALL")}
             >
               전체
             </button>
@@ -152,36 +88,11 @@ export const TagDropdown = ({ selectedTag, onSelectTag }: TagDropdownProps) => {
               <button
                 type="button"
                 onClick={() => handleSelect(tag)}
-                style={{
-                  width: "100%",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "8px",
-                  padding: "10px 16px",
-                  border: "none",
-                  background:
-                    selectedTag === tag
-                      ? "var(--color-blue-01)"
-                      : "transparent",
-                  color:
-                    selectedTag === tag
-                      ? "var(--color-blue-05)"
-                      : "var(--color-blue-07)",
-                  fontWeight: selectedTag === tag ? 600 : 400,
-                  fontSize: "14px",
-                  cursor: "pointer",
-                }}
+                className={menuItemClass(selectedTag === tag)}
               >
                 {/* 카테고리 색상 동그라미 인디케이터 */}
                 <span
-                  style={{
-                    width: "8px",
-                    height: "8px",
-                    borderRadius: "50%",
-                    backgroundColor: TAG_COLORS[tag],
-                    display: "inline-block",
-                    flexShrink: 0,
-                  }}
+                  className={`inline-block h-2 w-2 shrink-0 rounded-full ${TAG_DOT_CLASS[tag]}`}
                 />
                 <span>{tag}</span>
               </button>

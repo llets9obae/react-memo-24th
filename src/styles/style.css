@@ -1,10 +1,7 @@
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+@import "tailwindcss";
 
-:root {
+/* 디자인 시스템 색상 토큰 — Tailwind 유틸리티(bg-blue-06, text-gray-04 등)로도 바로 사용 가능 */
+@theme {
   --color-blue-01: #e4edff;
   --color-blue-02: #c5d9ff;
   --color-blue-03: #a2c1ff;
@@ -21,7 +18,9 @@
   --color-gray-06: #29313c;
   --color-gray-07: #121416;
   --color-red-01: #ff5656;
+}
 
+:root {
   --font-family-base:
     "Pretendard", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 
