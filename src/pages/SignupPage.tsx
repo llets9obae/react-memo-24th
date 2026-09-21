@@ -1,11 +1,10 @@
 import { useState } from "react";
-import { login } from "../api/auth";
+import { signup } from "../api/auth";
 import { getErrorMessage } from "../api/client";
-import { useAuthStore } from "../store/useAuthStore";
 
-interface LoginPageProps {
-  onLogin?: () => void;
-  onGoToSignup?: () => void;
+interface SignupPageProps {
+  onSignup?: () => void;
+  onGoToLogin?: () => void;
 }
 
 const inputClass =
@@ -15,25 +14,30 @@ const inputClass =
 const linkButtonClass =
   "cursor-pointer border-none bg-transparent p-0 text-[13px] text-gray-04";
 
-export const LoginPage = ({ onLogin, onGoToSignup }: LoginPageProps) => {
+export const SignupPage = ({ onSignup, onGoToLogin }: SignupPageProps) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [passwordConfirm, setPasswordConfirm] = useState("");
+  const [isSigningUp, setIsSigningUp] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const setAccessToken = useAuthStore((state) => state.setAccessToken);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (password !== passwordConfirm) {
+      setError("비밀번호가 일치하지 않습니다.");
+      return;
+    }
+
     setError(null);
-    setIsLoggingIn(true);
+    setIsSigningUp(true);
     try {
-      const { accessToken } = await login({ email, password });
-      setAccessToken(accessToken);
-      onLogin?.();
+      await signup({ email, password });
+      onSignup?.();
     } catch (err) {
       setError(getErrorMessage(err));
     } finally {
-      setIsLoggingIn(false);
+      setIsSigningUp(false);
     }
   };
 
@@ -51,7 +55,14 @@ export const LoginPage = ({ onLogin, onGoToSignup }: LoginPageProps) => {
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          placeholder="비밀번호를 입력하세요"
+          placeholder="비밀번호를 입력하세요 (8자 이상)"
+          className={inputClass}
+        />
+        <input
+          type="password"
+          value={passwordConfirm}
+          onChange={(e) => setPasswordConfirm(e.target.value)}
+          placeholder="비밀번호를 다시 입력하세요"
           className={inputClass}
         />
 
@@ -59,24 +70,17 @@ export const LoginPage = ({ onLogin, onGoToSignup }: LoginPageProps) => {
 
         <button
           type="submit"
-          disabled={isLoggingIn}
+          disabled={isSigningUp}
           className="h-14 w-full cursor-pointer rounded-xl border-none bg-blue-04
             text-base font-semibold text-white-00 disabled:cursor-not-allowed disabled:opacity-60"
         >
-          {isLoggingIn ? "로그인 중..." : "로그인"}
+          {isSigningUp ? "가입 중..." : "회원가입"}
         </button>
 
         <div className="mt-8 flex items-center justify-center gap-2">
-          <button type="button" onClick={onGoToSignup} className={linkButtonClass}>
-            회원가입
-          </button>
-          <span className="text-[13px] text-gray-03">|</span>
-          <button type="button" className={linkButtonClass}>
-            아이디 찾기
-          </button>
-          <span className="text-[13px] text-gray-03">|</span>
-          <button type="button" className={linkButtonClass}>
-            비밀번호 찾기
+          <span className="text-[13px] text-gray-04">이미 계정이 있으신가요?</span>
+          <button type="button" onClick={onGoToLogin} className={linkButtonClass}>
+            로그인
           </button>
         </div>
       </form>

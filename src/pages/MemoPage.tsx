@@ -9,6 +9,7 @@ import type { MemoItem } from "../components/Memo/MemoCard";
 import { SearchResultEmpty } from "../components/Memo/SearchResultEmpty";
 import { MemoDetailModal } from "../components/Memo/MemoDetailModal"; // 👈 모달 추가
 import { ConfirmModal } from "../components/Memo/ConfirmModal"; // 👈 삭제 확인 모달 추가
+import { useAuthStore } from "../store/useAuthStore";
 
 import { INITIAL_MEMOS } from "../constants/mockData";
 
@@ -32,6 +33,7 @@ export const MemoPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedMemo, setSelectedMemo] = useState<MemoItem | null>(null);
   const [memoToDelete, setMemoToDelete] = useState<MemoItem | null>(null);
+  const logout = useAuthStore((state) => state.logout);
 
   // 👈 현재 열람 중인 메모 상태 (null이면 모달 닫힘)
   useEffect(() => {
@@ -91,6 +93,7 @@ export const MemoPage = () => {
           onSelectTag={setSelectedTag}
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}
+          onLogoutClick={logout}
         />
 
         {filteredMemos.length === 0 ? (
