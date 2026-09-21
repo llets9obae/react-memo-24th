@@ -2,6 +2,7 @@ import { useState } from "react";
 import { TagDropdown } from "./TagDropdown";
 import type { TagType } from "./TagDropdown";
 import type { MemoItem } from "./MemoCard";
+import { ConfirmModal } from "./ConfirmModal";
 import fieldIcon from "../../assets/icons/field.svg";
 import backIcon from "../../assets/icons/back.svg";
 
@@ -35,6 +36,9 @@ export const MemoFormModal = ({ onClose, onSubmit }: MemoFormModalProps) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [date, setDate] = useState(todayISO);
+  const [showBackConfirm, setShowBackConfirm] = useState(false);
+  const [showCancelConfirm, setShowCancelConfirm] = useState(false);
+  const [showCompleteInfo, setShowCompleteInfo] = useState(false);
 
   const isUnselected = selectedTag === "ALL";
   // 태그를 선택하지 않았을 때 저장 카테고리는 Others로 기본 처리
@@ -51,8 +55,14 @@ export const MemoFormModal = ({ onClose, onSubmit }: MemoFormModalProps) => {
   const canSubmit =
     !isUnselected && title.trim() !== "" && content.trim() !== "";
 
-  const handleSubmit = () => {
+  // "작성 완료" 클릭 시 바로 닫지 않고 완료 안내 모달부터 띄운다
+  const handleSubmitClick = () => {
     if (!canSubmit) return;
+    setShowCompleteInfo(true);
+  };
+
+  // 완료 안내 모달에서 "확인"을 눌렀을 때 실제로 메모를 저장하고 모달을 닫는다
+  const handleConfirmComplete = () => {
     onSubmit({
       title: title.trim(),
       content: content.trim(),
@@ -63,7 +73,7 @@ export const MemoFormModal = ({ onClose, onSubmit }: MemoFormModalProps) => {
 
   return (
     <div
-      onClick={onClose}
+      onClick={() => setShowBackConfirm(true)}
       className="fixed inset-0 z-[1000] flex items-center justify-center
         bg-white-00 backdrop-blur-[3px]"
     >
@@ -73,7 +83,7 @@ export const MemoFormModal = ({ onClose, onSubmit }: MemoFormModalProps) => {
       >
         <button
           type="button"
-          onClick={onClose}
+          onClick={() => setShowBackConfirm(true)}
           aria-label="뒤로가기"
           className="flex h-8 w-8 cursor-pointer items-center justify-center
             border-none bg-transparent p-0"
@@ -124,7 +134,7 @@ export const MemoFormModal = ({ onClose, onSubmit }: MemoFormModalProps) => {
         <div className="mt-2 flex h-11 w-[480px] max-w-[calc(100vw-32px)] gap-3">
           <button
             type="button"
-            onClick={onClose}
+            onClick={() => setShowCancelConfirm(true)}
             className="h-full flex-1 cursor-pointer rounded-xl border-none
               bg-gray-01 text-sm font-semibold text-gray-03"
           >
@@ -132,7 +142,7 @@ export const MemoFormModal = ({ onClose, onSubmit }: MemoFormModalProps) => {
           </button>
           <button
             type="button"
-            onClick={handleSubmit}
+            onClick={handleSubmitClick}
             disabled={!canSubmit}
             className={`h-full flex-1 cursor-pointer rounded-xl border-none text-sm
               font-semibold text-white-00 disabled:cursor-not-allowed disabled:opacity-60
@@ -142,6 +152,40 @@ export const MemoFormModal = ({ onClose, onSubmit }: MemoFormModalProps) => {
           </button>
         </div>
       </div>
+
+      {/* 뒤로가기(‹) 확인 모달 */}
+      {showBackConfirm && (
+        <ConfirmModal
+          title="이전으로 돌아가시겠습니까?"
+          description="작성중이던 메모는 저장되지 않습니다."
+          confirmText="돌아가기"
+          cancelText="계속 작성하기"
+          onConfirm={onClose}
+          onCancel={() => setShowBackConfirm(false)}
+        />
+      )}
+
+      {/* 작성 취소 버튼 확인 모달 */}
+      {showCancelConfirm && (
+        <ConfirmModal
+          title="메모 작성을 그만 두시겠습니까?"
+          description="작성중이던 메모는 저장되지 않습니다."
+          confirmText="작성 취소하기"
+          cancelText="계속 작성하기"
+          onConfirm={onClose}
+          onCancel={() => setShowCancelConfirm(false)}
+        />
+      )}
+
+      {/* 작성 완료 안내 모달 */}
+      {showCompleteInfo && (
+        <ConfirmModal
+          title="작성이 완료되었습니다"
+          description="메인 화면에서 작성한 메모를 확인할 수 있어요."
+          confirmText="확인"
+          onConfirm={handleConfirmComplete}
+        />
+      )}
     </div>
   );
 };
