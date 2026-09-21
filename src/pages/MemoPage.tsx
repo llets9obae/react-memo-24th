@@ -9,6 +9,7 @@ import type { MemoItem } from "../components/Memo/MemoCard";
 import { SearchResultEmpty } from "../components/Memo/SearchResultEmpty";
 import { MemoDetailModal } from "../components/Memo/MemoDetailModal"; // 👈 모달 추가
 import { ConfirmModal } from "../components/Memo/ConfirmModal"; // 👈 삭제 확인 모달 추가
+import { MemoFormModal } from "../components/Memo/MemoFormModal"; // 👈 메모 작성 모달 추가
 import { useAuthStore } from "../store/useAuthStore";
 
 import { INITIAL_MEMOS } from "../constants/mockData";
@@ -34,6 +35,7 @@ export const MemoPage = () => {
   const [selectedMemo, setSelectedMemo] = useState<MemoItem | null>(null);
   const [memoToDelete, setMemoToDelete] = useState<MemoItem | null>(null);
   const [showDeleteComplete, setShowDeleteComplete] = useState(false);
+  const [isCreatingMemo, setIsCreatingMemo] = useState(false);
   const logout = useAuthStore((state) => state.logout);
 
   // 👈 현재 열람 중인 메모 상태 (null이면 모달 닫힘)
@@ -62,6 +64,25 @@ export const MemoPage = () => {
     setMemoToDelete(null);
     setSelectedMemo(null);
     setShowDeleteComplete(true);
+  };
+
+  // 새 메모 작성 완료 시 목록 맨 앞에 추가
+  const handleAddMemo = (memo: {
+    title: string;
+    content: string;
+    category: MemoItem["category"];
+    date: string;
+  }) => {
+    const newMemo: MemoItem = {
+      id: crypto.randomUUID(),
+      title: memo.title,
+      content: memo.content,
+      category: memo.category,
+      date: memo.date,
+      isPinned: false,
+    };
+    setMemos((prev) => [newMemo, ...prev]);
+    setIsCreatingMemo(false);
   };
 
   const isFiltering = searchQuery.trim() !== "" || selectedTag !== "ALL";
@@ -95,6 +116,7 @@ export const MemoPage = () => {
           onSelectTag={setSelectedTag}
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}
+          onAddClick={() => setIsCreatingMemo(true)}
           onLogoutClick={logout}
         />
 
@@ -102,7 +124,7 @@ export const MemoPage = () => {
           isFiltering ? (
             <SearchResultEmpty />
           ) : (
-            <EmptyState />
+            <EmptyState onAddClick={() => setIsCreatingMemo(true)} />
           )
         ) : (
           <div className="flex w-full flex-col gap-6">
@@ -171,6 +193,14 @@ export const MemoPage = () => {
             description="삭제된 메모는 휴지통에서 확인 가능합니다."
             confirmText="확인"
             onConfirm={() => setShowDeleteComplete(false)}
+          />
+        )}
+
+        {/* 👈 메모 작성 모달 */}
+        {isCreatingMemo && (
+          <MemoFormModal
+            onClose={() => setIsCreatingMemo(false)}
+            onSubmit={handleAddMemo}
           />
         )}
       </div>
