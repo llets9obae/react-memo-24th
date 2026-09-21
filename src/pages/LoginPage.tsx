@@ -21,6 +21,7 @@ export const LoginPage = ({ onLogin, onGoToSignup }: LoginPageProps) => {
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const setAccessToken = useAuthStore((state) => state.setAccessToken);
+  const isFilled = email.trim() !== "" && password.trim() !== "";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,7 +45,7 @@ export const LoginPage = ({ onLogin, onGoToSignup }: LoginPageProps) => {
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="이메일을 입력하세요"
+          placeholder="아이디를 입력하세요"
           className={inputClass}
         />
         <input
@@ -60,10 +61,11 @@ export const LoginPage = ({ onLogin, onGoToSignup }: LoginPageProps) => {
         <button
           type="submit"
           disabled={isLoggingIn}
-          className="h-14 w-full cursor-pointer rounded-xl border-none bg-blue-04
-            text-base font-semibold text-white-00 disabled:cursor-not-allowed disabled:opacity-60"
+          className={`h-14 w-full cursor-pointer rounded-xl border-none text-base
+            font-semibold text-white-00 transition-colors disabled:cursor-not-allowed
+            disabled:opacity-60 ${isFilled ? "bg-blue-05" : "bg-blue-04"}`}
         >
-          {isLoggingIn ? "로그인 중..." : "로그인"}
+          로그인
         </button>
 
         <div className="mt-8 flex items-center justify-center gap-2">

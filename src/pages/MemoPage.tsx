@@ -33,6 +33,7 @@ export const MemoPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedMemo, setSelectedMemo] = useState<MemoItem | null>(null);
   const [memoToDelete, setMemoToDelete] = useState<MemoItem | null>(null);
+  const [showDeleteComplete, setShowDeleteComplete] = useState(false);
   const logout = useAuthStore((state) => state.logout);
 
   // 👈 현재 열람 중인 메모 상태 (null이면 모달 닫힘)
@@ -60,6 +61,7 @@ export const MemoPage = () => {
     setMemos((prev) => prev.filter((memo) => memo.id !== memoToDelete.id));
     setMemoToDelete(null);
     setSelectedMemo(null);
+    setShowDeleteComplete(true);
   };
 
   const isFiltering = searchQuery.trim() !== "" || selectedTag !== "ALL";
@@ -153,12 +155,22 @@ export const MemoPage = () => {
         {/* 👈 삭제 전 한 번 더 확인하는 모달 */}
         {memoToDelete && (
           <ConfirmModal
-            title="메모를 삭제할까요?"
-            description={`"${memoToDelete.title}" 메모는 삭제 후 복구할 수 없어요.`}
+            title="메모를 삭제 하시겠습니까?"
+            description="삭제된 메모는 휴지통에서 확인 가능합니다."
             confirmText="삭제"
             cancelText="취소"
             onConfirm={handleConfirmDeleteMemo}
             onCancel={() => setMemoToDelete(null)}
+          />
+        )}
+
+        {/* 👈 삭제 완료 안내 모달 */}
+        {showDeleteComplete && (
+          <ConfirmModal
+            title="해당 메모가 삭제되었습니다"
+            description="삭제된 메모는 휴지통에서 확인 가능합니다."
+            confirmText="확인"
+            onConfirm={() => setShowDeleteComplete(false)}
           />
         )}
       </div>

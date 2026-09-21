@@ -20,6 +20,8 @@ export const SignupPage = ({ onSignup, onGoToLogin }: SignupPageProps) => {
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [isSigningUp, setIsSigningUp] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const isFilled =
+    email.trim() !== "" && password.trim() !== "" && passwordConfirm.trim() !== "";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -71,10 +73,11 @@ export const SignupPage = ({ onSignup, onGoToLogin }: SignupPageProps) => {
         <button
           type="submit"
           disabled={isSigningUp}
-          className="h-14 w-full cursor-pointer rounded-xl border-none bg-blue-04
-            text-base font-semibold text-white-00 disabled:cursor-not-allowed disabled:opacity-60"
+          className={`h-14 w-full cursor-pointer rounded-xl border-none text-base
+            font-semibold text-white-00 transition-colors disabled:cursor-not-allowed
+            disabled:opacity-60 ${isFilled ? "bg-blue-05" : "bg-blue-04"}`}
         >
-          {isSigningUp ? "가입 중..." : "회원가입"}
+          {isSigningUp ? "회원가입 중..." : "회원가입"}
         </button>
 
         <div className="mt-8 flex items-center justify-center gap-2">
@@ -82,6 +85,7 @@ export const SignupPage = ({ onSignup, onGoToLogin }: SignupPageProps) => {
           <button type="button" onClick={onGoToLogin} className={linkButtonClass}>
             로그인
           </button>
+
         </div>
       </form>
     </div>
