@@ -18,7 +18,7 @@ interface MemoCardProps {
 const CATEGORY_BG_CLASS: Record<MemoItem["category"], string> = {
   Work: "bg-blue-06",
   Daily: "bg-blue-03",
-  Others: "bg-gray-03",
+  Others: "bg-gray-02",
 };
 
 export const MemoCard = ({ memo, onTogglePin, onClick }: MemoCardProps) => {

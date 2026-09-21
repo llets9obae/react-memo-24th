@@ -40,7 +40,7 @@ export const ConfirmModal = ({
               type="button"
               onClick={onCancel}
               className="h-12 flex-1 cursor-pointer rounded-xl border-none
-                bg-gray-01 text-sm font-semibold text-gray-06"
+                bg-gray-01 text-sm font-semibold text-black-00"
             >
               {cancelText}
             </button>

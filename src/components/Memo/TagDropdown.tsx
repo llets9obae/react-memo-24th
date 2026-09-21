@@ -6,20 +6,25 @@ export type TagType = "ALL" | "Daily" | "Work" | "Others";
 interface TagDropdownProps {
   selectedTag: TagType;
   onSelectTag: (tag: TagType) => void;
+  buttonBgClass?: string;
 }
 
 // 카테고리별 색상 매핑
 const TAG_DOT_CLASS: Record<Exclude<TagType, "ALL">, string> = {
-  Daily: "bg-blue-04",
+  Daily: "bg-blue-03",
   Work: "bg-blue-06",
-  Others: "bg-gray-03",
+  Others: "bg-gray-02",
 };
 
 const menuItemClass = (active: boolean) =>
   `flex w-full items-center gap-2 border-none px-4 py-2.5 text-sm cursor-pointer
   ${active ? "bg-blue-01 font-semibold text-blue-05" : "bg-transparent font-normal text-blue-07"}`;
 
-export const TagDropdown = ({ selectedTag, onSelectTag }: TagDropdownProps) => {
+export const TagDropdown = ({
+  selectedTag,
+  onSelectTag,
+  buttonBgClass = "bg-blue-01",
+}: TagDropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleSelect = (tag: TagType) => {
@@ -33,8 +38,8 @@ export const TagDropdown = ({ selectedTag, onSelectTag }: TagDropdownProps) => {
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
-        className="inline-flex cursor-pointer items-center gap-2 rounded-[20px] border-none
-          bg-blue-01 px-3.5 py-1.5"
+        className={`inline-flex cursor-pointer items-center gap-2 rounded-[20px] border-none
+          px-3.5 py-1.5 ${buttonBgClass}`}
       >
         {selectedTag === "ALL" ? (
           <>

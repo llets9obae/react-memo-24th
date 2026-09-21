@@ -16,11 +16,13 @@ export const MemoSearchBar = ({
 }: MemoSearchBarProps) => {
   return (
     <div
-      className="box-border flex h-14 w-[540px] max-w-full items-center rounded-[40px]
-        bg-white-00 py-1.5 pr-2.5 pl-4 shadow-[0px_4px_16px_rgba(0,27,81,0.06)]"
+      className="box-border flex h-14 w-full min-w-0 max-w-[540px] flex-1 items-center
+        rounded-[40px] bg-white-00 py-1.5 pr-2.5 pl-4 shadow-[0px_4px_16px_rgba(0,27,81,0.06)]"
     >
-      {/* 태그 선택 드롭다운 */}
-      <TagDropdown selectedTag={selectedTag} onSelectTag={onSelectTag} />
+      {/* 태그 선택 드롭다운 (좁아져도 찌그러지지 않도록 shrink 방지) */}
+      <div className="shrink-0">
+        <TagDropdown selectedTag={selectedTag} onSelectTag={onSelectTag} />
+      </div>
 
       {/* 검색 입력 인풋창 */}
       <input

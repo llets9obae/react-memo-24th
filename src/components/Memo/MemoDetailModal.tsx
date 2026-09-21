@@ -1,6 +1,7 @@
 import type { MemoItem } from "./MemoCard";
 import editIcon from "../../assets/icons/edit.svg";
 import trashIcon from "../../assets/icons/trash.svg";
+import fieldIcon from "../../assets/icons/field.svg";
 
 interface MemoDetailModalProps {
   memo: MemoItem;
@@ -13,14 +14,14 @@ interface MemoDetailModalProps {
 const CATEGORY_BG_CLASS: Record<string, string> = {
   Work: "bg-blue-06",
   Daily: "bg-blue-03",
-  Others: "bg-gray-03",
+  Others: "bg-gray-02",
 };
 
 // 2. 카테고리 뱃지 내부 점(Dot) 컬러
 const CATEGORY_DOT_CLASS: Record<string, string> = {
   Work: "bg-blue-06",
   Daily: "bg-blue-03",
-  Others: "bg-gray-03",
+  Others: "bg-gray-02",
 };
 
 export const MemoDetailModal = ({
@@ -72,9 +73,9 @@ export const MemoDetailModal = ({
               {memo.category}
             </div>
 
-            <span className="h-4 w-px bg-white/40" />
+            <img src={fieldIcon} alt="구분선" className="h-[52px] w-[3px]" />
 
-            <span className="text-[13px] opacity-85">{memo.date}</span>
+            <span className="text-xl font-bold text-[#FAFAFA]">{memo.date}</span>
           </div>
 
           {/* 본문 내용 */}
