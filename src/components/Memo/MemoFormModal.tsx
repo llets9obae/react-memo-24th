@@ -21,10 +21,9 @@ const CATEGORY_BG_CLASS: Record<MemoItem["category"], string> = {
   Others: "bg-gray-02",
 };
 
-// 태그 미선택 상태의 기본 카드 배경색
+// 태그 미선택 상태의 카드 배경색
 const UNSELECTED_BG_CLASS = "bg-[#DDE9FF]";
 
-// <input type="date"> 는 YYYY-MM-DD 형식을 쓰므로 오늘 날짜를 그 형식으로 생성
 const todayISO = () => {
   const now = new Date();
   const pad = (n: number) => String(n).padStart(2, "0");
@@ -38,17 +37,22 @@ export const MemoFormModal = ({ onClose, onSubmit }: MemoFormModalProps) => {
   const [date, setDate] = useState(todayISO);
 
   const isUnselected = selectedTag === "ALL";
+  // 태그를 선택하지 않았을 때 저장 카테고리는 Others로 기본 처리
   const category: MemoItem["category"] = isUnselected ? "Others" : selectedTag;
   const cardBgClass = isUnselected
     ? UNSELECTED_BG_CLASS
     : CATEGORY_BG_CLASS[category];
-  const textColorClass = isUnselected ? "text-blue-07" : "text-white-00";
+  // 태그 미선택 상태의 글자색(placeholder·입력 텍스트 모두)
+  const textColorClass = isUnselected ? "text-blue-03" : "text-white-00";
   const placeholderClass = isUnselected
-    ? "placeholder:text-blue-04"
+    ? "placeholder:text-blue-03"
     : "placeholder:text-white/60";
+  // 태그 선택 + 제목/본문 모두 채워야 작성 완료 가능
+  const canSubmit =
+    !isUnselected && title.trim() !== "" && content.trim() !== "";
 
   const handleSubmit = () => {
-    if (title.trim() === "") return;
+    if (!canSubmit) return;
     onSubmit({
       title: title.trim(),
       content: content.trim(),
@@ -78,64 +82,64 @@ export const MemoFormModal = ({ onClose, onSubmit }: MemoFormModalProps) => {
         </button>
 
         <div
-          className={`box-border flex h-[556px] w-[556px] max-h-[calc(100vh-40px)]
-            max-w-[calc(100vw-32px)] flex-col justify-between rounded-3xl
-            px-11 py-10 shadow-[0_12px_32px_rgba(0,0,0,0.25)] ${cardBgClass}`}
+          className={`box-border flex h-[480px] w-[480px] max-h-[calc(100vh-40px)]
+            max-w-[calc(100vw-32px)] flex-col gap-2 overflow-hidden rounded-3xl
+            pt-9 pr-8 pb-8 pl-8 shadow-[0_12px_32px_rgba(0,0,0,0.25)] ${cardBgClass}`}
         >
-          <div className="flex w-full flex-1 flex-col gap-5 overflow-hidden">
+          <input
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="제목을 입력하세요..."
+            className={`w-full border-none bg-transparent text-2xl leading-[1.3]
+              font-bold outline-none ${textColorClass} ${placeholderClass}`}
+          />
+
+          <div className="flex items-center gap-3">
+            <TagDropdown
+              selectedTag={selectedTag}
+              onSelectTag={setSelectedTag}
+              buttonBgClass="bg-blue-02"
+            />
+            <img src={fieldIcon} alt="구분선" className="h-[52px] w-[3px]" />
             <input
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="제목을 입력하세요..."
-              className={`w-full border-none bg-transparent text-2xl leading-[1.3]
-                font-bold outline-none ${textColorClass} ${placeholderClass}`}
-            />
-
-            <div className="flex items-center gap-3">
-              <TagDropdown
-                selectedTag={selectedTag}
-                onSelectTag={setSelectedTag}
-                buttonBgClass="bg-blue-02"
-              />
-              <img src={fieldIcon} alt="구분선" className="h-[52px] w-[3px]" />
-              <input
-                type="date"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-                className="cursor-pointer border-none bg-transparent text-xl
-                  font-bold text-[#FAFAFA] outline-none [color-scheme:light]"
-              />
-            </div>
-
-            <textarea
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              placeholder="본문을 입력하세요..."
-              className={`w-full flex-1 resize-none border-none bg-transparent text-[15px]
-                leading-[1.6] opacity-95 outline-none ${textColorClass} ${placeholderClass}`}
+              type="date"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              className="cursor-pointer border-none bg-transparent text-xl
+                font-bold text-[#FAFAFA] outline-none [color-scheme:light]"
             />
           </div>
 
-          <div className="flex w-full gap-2">
-            <button
-              type="button"
-              onClick={onClose}
-              className="h-12 flex-1 cursor-pointer rounded-xl border-none
-                bg-gray-01 text-sm font-semibold text-gray-03"
-            >
-              작성 취소
-            </button>
-            <button
-              type="button"
-              onClick={handleSubmit}
-              disabled={title.trim() === ""}
-              className="h-12 flex-1 cursor-pointer rounded-xl border-none bg-blue-03
-                text-sm font-semibold text-white-00 disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              작성 완료
-            </button>
-          </div>
+          <textarea
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            placeholder="본문을 입력하세요..."
+            className={`w-full flex-1 resize-none border-none bg-transparent text-[15px]
+              leading-[1.6] opacity-95 outline-none ${textColorClass} ${placeholderClass}`}
+          />
+        </div>
+
+        {/* 메모 카드와 분리된 하단 액션 바 (카드와 같은 비율로 축소) */}
+        <div className="mt-2 flex h-11 w-[480px] max-w-[calc(100vw-32px)] gap-3">
+          <button
+            type="button"
+            onClick={onClose}
+            className="h-full flex-1 cursor-pointer rounded-xl border-none
+              bg-gray-01 text-sm font-semibold text-gray-03"
+          >
+            작성 취소
+          </button>
+          <button
+            type="button"
+            onClick={handleSubmit}
+            disabled={!canSubmit}
+            className={`h-full flex-1 cursor-pointer rounded-xl border-none text-sm
+              font-semibold text-white-00 disabled:cursor-not-allowed disabled:opacity-60
+              ${canSubmit ? "bg-[#1B4EF5]" : "bg-blue-03"}`}
+          >
+            작성 완료
+          </button>
         </div>
       </div>
     </div>
