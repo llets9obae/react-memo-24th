@@ -66,10 +66,10 @@ export const MemoDetailModal = ({
           {/* 카테고리 칩 | 날짜 메타 영역 */}
           <div className="flex items-center gap-3">
             <div
-              className="inline-flex items-center gap-1.5 rounded-[20px] bg-white-00
-                px-3.5 py-1 text-[13px] font-semibold text-blue-05"
+              className="inline-flex items-center gap-2 rounded-[24px] bg-white-00
+                px-4 py-1.5 text-base font-semibold text-blue-05"
             >
-              <span className={`h-2 w-2 rounded-full ${dotClass}`} />
+              <span className={`h-2.5 w-2.5 rounded-full ${dotClass}`} />
               {memo.category}
             </div>
 
@@ -92,7 +92,7 @@ export const MemoDetailModal = ({
             aria-label="수정"
             className="cursor-pointer border-none bg-transparent p-0"
           >
-            <img src={editIcon} alt="수정" className="h-5 w-5 brightness-0 invert" />
+            <img src={editIcon} alt="수정" className="h-7 w-7 brightness-0 invert" />
           </button>
           <button
             type="button"
@@ -100,7 +100,7 @@ export const MemoDetailModal = ({
             aria-label="삭제"
             className="cursor-pointer border-none bg-transparent p-0"
           >
-            <img src={trashIcon} alt="삭제" className="h-5 w-5 brightness-0 invert" />
+            <img src={trashIcon} alt="삭제" className="h-7 w-7 brightness-0 invert" />
           </button>
         </div>
       </div>

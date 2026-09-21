@@ -18,7 +18,7 @@ const TAG_DOT_CLASS: Record<Exclude<TagType, "ALL">, string> = {
 
 const menuItemClass = (active: boolean) =>
   `flex w-full items-center gap-2 border-none px-4 py-2.5 text-sm cursor-pointer
-  ${active ? "bg-blue-01 font-semibold text-blue-05" : "bg-transparent font-normal text-blue-07"}`;
+  ${active ? "bg-blue-01 font-semibold text-black-00" : "bg-transparent font-normal text-blue-07"}`;
 
 export const TagDropdown = ({
   selectedTag,
@@ -38,8 +38,8 @@ export const TagDropdown = ({
       <button
         type="button"
         onClick={() => setIsOpen((prev) => !prev)}
-        className={`inline-flex cursor-pointer items-center gap-2 rounded-[20px] border-none
-          px-3.5 py-1.5 ${buttonBgClass}`}
+        className={`flex w-[112px] cursor-pointer items-center justify-center gap-2
+          rounded-[20px] border-none px-3.5 py-1.5 ${buttonBgClass}`}
       >
         {selectedTag === "ALL" ? (
           <>
@@ -56,16 +56,11 @@ export const TagDropdown = ({
         ) : (
           <>
             <span
-              className={`inline-block h-2 w-2 shrink-0 rounded-full ${TAG_DOT_CLASS[selectedTag]}`}
+              className={`inline-block h-4 w-4 shrink-0 rounded-full ${TAG_DOT_CLASS[selectedTag]}`}
             />
             <span className="text-[15px] font-semibold text-blue-07">
               {selectedTag}
             </span>
-            <img
-              src={vectorIcon}
-              alt="화살표"
-              className="h-[13px] w-4 shrink-0 transition-transform duration-200 ease-in-out"
-            />
           </>
         )}
       </button>

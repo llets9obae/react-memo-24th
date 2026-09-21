@@ -14,6 +14,9 @@ interface MemoFormModalProps {
     category: MemoItem["category"];
     date: string;
   }) => void;
+  // 수정 모드일 때 기존 메모 값으로 폼을 채우고, 버튼 문구를 바꾸는 데 사용
+  initialMemo?: MemoItem;
+  submitLabel?: string;
 }
 
 const CATEGORY_BG_CLASS: Record<MemoItem["category"], string> = {
@@ -31,11 +34,20 @@ const todayISO = () => {
   return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
 };
 
-export const MemoFormModal = ({ onClose, onSubmit }: MemoFormModalProps) => {
-  const [selectedTag, setSelectedTag] = useState<TagType>("ALL");
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [date, setDate] = useState(todayISO);
+export const MemoFormModal = ({
+  onClose,
+  onSubmit,
+  initialMemo,
+  submitLabel = "작성 완료",
+}: MemoFormModalProps) => {
+  const [selectedTag, setSelectedTag] = useState<TagType>(
+    initialMemo?.category ?? "ALL",
+  );
+  const [title, setTitle] = useState(initialMemo?.title ?? "");
+  const [content, setContent] = useState(initialMemo?.content ?? "");
+  const [date, setDate] = useState(
+    initialMemo ? initialMemo.date.replaceAll(".", "-") : todayISO(),
+  );
   const [showBackConfirm, setShowBackConfirm] = useState(false);
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
   const [showCompleteInfo, setShowCompleteInfo] = useState(false);
@@ -148,7 +160,7 @@ export const MemoFormModal = ({ onClose, onSubmit }: MemoFormModalProps) => {
               font-semibold text-white-00 disabled:cursor-not-allowed disabled:opacity-60
               ${canSubmit ? "bg-[#1B4EF5]" : "bg-blue-03"}`}
           >
-            작성 완료
+            {submitLabel}
           </button>
         </div>
       </div>

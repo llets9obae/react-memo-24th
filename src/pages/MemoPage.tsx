@@ -36,6 +36,7 @@ export const MemoPage = () => {
   const [memoToDelete, setMemoToDelete] = useState<MemoItem | null>(null);
   const [showDeleteComplete, setShowDeleteComplete] = useState(false);
   const [isCreatingMemo, setIsCreatingMemo] = useState(false);
+  const [editingMemo, setEditingMemo] = useState<MemoItem | null>(null);
   const logout = useAuthStore((state) => state.logout);
 
   // 👈 현재 열람 중인 메모 상태 (null이면 모달 닫힘)
@@ -83,6 +84,20 @@ export const MemoPage = () => {
     };
     setMemos((prev) => [newMemo, ...prev]);
     setIsCreatingMemo(false);
+  };
+
+  // 메모 수정 완료 시 기존 메모를 새 값으로 교체
+  const handleEditMemo = (memo: {
+    title: string;
+    content: string;
+    category: MemoItem["category"];
+    date: string;
+  }) => {
+    if (!editingMemo) return;
+    setMemos((prev) =>
+      prev.map((m) => (m.id === editingMemo.id ? { ...m, ...memo } : m)),
+    );
+    setEditingMemo(null);
   };
 
   const isFiltering = searchQuery.trim() !== "" || selectedTag !== "ALL";
@@ -170,7 +185,10 @@ export const MemoPage = () => {
             memo={selectedMemo}
             onClose={() => setSelectedMemo(null)}
             onDelete={handleRequestDeleteMemo}
-            onEdit={(memo) => alert(`수정: ${memo.title}`)}
+            onEdit={(memo) => {
+              setSelectedMemo(null);
+              setEditingMemo(memo);
+            }}
           />
         )}
 
@@ -201,6 +219,16 @@ export const MemoPage = () => {
           <MemoFormModal
             onClose={() => setIsCreatingMemo(false)}
             onSubmit={handleAddMemo}
+          />
+        )}
+
+        {/* 👈 메모 수정 모달 (작성 모달 재사용) */}
+        {editingMemo && (
+          <MemoFormModal
+            initialMemo={editingMemo}
+            submitLabel="수정 완료"
+            onClose={() => setEditingMemo(null)}
+            onSubmit={handleEditMemo}
           />
         )}
       </div>
