@@ -10,12 +10,15 @@ import { SearchResultEmpty } from "../components/Memo/SearchResultEmpty";
 import { MemoDetailModal } from "../components/Memo/MemoDetailModal"; // 👈 모달 추가
 import { ConfirmModal } from "../components/Memo/ConfirmModal"; // 👈 삭제 확인 모달 추가
 import { MemoFormModal } from "../components/Memo/MemoFormModal"; // 👈 메모 작성 모달 추가
-import { useAuthStore } from "../store/useAuthStore";
 import { fetchMemos, createMemo, updateMemo, deleteMemo } from "../api/memos";
 import { getErrorMessage } from "../api/client";
 import { toApiCategory, toMemoItem } from "../utils/memoMapper";
 
-export const MemoPage = () => {
+interface MemoPageProps {
+  onProfileClick: () => void;
+}
+
+export const MemoPage = ({ onProfileClick }: MemoPageProps) => {
   const [memos, setMemos] = useState<MemoItem[]>([]);
   const [isLoadingMemos, setIsLoadingMemos] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -28,7 +31,6 @@ export const MemoPage = () => {
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const [isCreatingMemo, setIsCreatingMemo] = useState(false);
   const [editingMemo, setEditingMemo] = useState<MemoItem | null>(null);
-  const logout = useAuthStore((state) => state.logout);
 
   // 로그인 직후 메모 목록을 서버에서 불러온다
   // (setState 호출은 전부 await 이후에만 일어나도록 해서, 마운트 이펙트에서
@@ -177,7 +179,7 @@ export const MemoPage = () => {
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}
           onAddClick={() => setIsCreatingMemo(true)}
-          onLogoutClick={logout}
+          onProfileClick={onProfileClick}
         />
 
         {isLoadingMemos ? (

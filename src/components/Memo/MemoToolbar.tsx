@@ -9,7 +9,7 @@ interface MemoToolbarProps {
   searchQuery: string;
   onSearchChange: (query: string) => void;
   onAddClick?: () => void;
-  onLogoutClick?: () => void;
+  onProfileClick?: () => void;
 }
 
 export const MemoToolbar = ({
@@ -18,7 +18,7 @@ export const MemoToolbar = ({
   searchQuery,
   onSearchChange,
   onAddClick,
-  onLogoutClick,
+  onProfileClick,
 }: MemoToolbarProps) => {
   const iconBtnClass =
     "flex h-14 w-14 shrink-0 items-center justify-center rounded-full border-none " +
@@ -47,8 +47,8 @@ export const MemoToolbar = ({
       <button
         type="button"
         className={iconBtnClass}
-        aria-label="로그아웃"
-        onClick={onLogoutClick}
+        aria-label="프로필"
+        onClick={onProfileClick}
       >
         <img src={profileIcon} alt="계정" className={iconImgClass} />
       </button>

@@ -29,7 +29,7 @@ export const LoginPage = ({ onLogin, onGoToSignup }: LoginPageProps) => {
     setIsLoggingIn(true);
     try {
       const { accessToken } = await login({ email, password });
-      setAccessToken(accessToken);
+      setAccessToken(accessToken, email.trim());
       onLogin?.();
     } catch (err) {
       setError(getErrorMessage(err));
