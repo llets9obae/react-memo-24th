@@ -6,7 +6,9 @@ export type TagType = "ALL" | "Daily" | "Work" | "Others";
 interface TagDropdownProps {
   selectedTag: TagType;
   onSelectTag: (tag: TagType) => void;
-  buttonBgClass?: string;
+  // 태그 미선택("태그 선택") 상태와 선택된 상태의 버튼 배경색을 따로 지정 가능
+  unselectedBgClass?: string;
+  selectedBgClass?: string;
 }
 
 // 카테고리별 색상 매핑
@@ -23,9 +25,12 @@ const menuItemClass = (active: boolean) =>
 export const TagDropdown = ({
   selectedTag,
   onSelectTag,
-  buttonBgClass = "bg-blue-01",
+  unselectedBgClass = "bg-blue-01",
+  selectedBgClass = "bg-blue-01",
 }: TagDropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
+  const buttonBgClass =
+    selectedTag === "ALL" ? unselectedBgClass : selectedBgClass;
 
   const handleSelect = (tag: TagType) => {
     onSelectTag(tag);

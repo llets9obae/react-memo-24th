@@ -3,6 +3,7 @@ import { TagDropdown } from "./TagDropdown";
 import type { TagType } from "./TagDropdown";
 import type { MemoItem } from "./MemoCard";
 import { ConfirmModal } from "./ConfirmModal";
+import { getErrorMessage } from "../../api/client";
 import fieldIcon from "../../assets/icons/field.svg";
 import backIcon from "../../assets/icons/back.svg";
 
@@ -13,7 +14,7 @@ interface MemoFormModalProps {
     content: string;
     category: MemoItem["category"];
     date: string;
-  }) => void;
+  }) => Promise<void>;
   // 수정 모드일 때 기존 메모 값으로 폼을 채우고, 버튼 문구를 바꾸는 데 사용
   initialMemo?: MemoItem;
   submitLabel?: string;
@@ -51,6 +52,8 @@ export const MemoFormModal = ({
   const [showBackConfirm, setShowBackConfirm] = useState(false);
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
   const [showCompleteInfo, setShowCompleteInfo] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const isUnselected = selectedTag === "ALL";
   // 태그를 선택하지 않았을 때 저장 카테고리는 Others로 기본 처리
@@ -65,22 +68,26 @@ export const MemoFormModal = ({
     : "placeholder:text-white/60";
   // 태그 선택 + 제목/본문 모두 채워야 작성 완료 가능
   const canSubmit =
-    !isUnselected && title.trim() !== "" && content.trim() !== "";
+    !isUnselected && title.trim() !== "" && content.trim() !== "" && !isSubmitting;
 
-  // "작성 완료" 클릭 시 바로 닫지 않고 완료 안내 모달부터 띄운다
-  const handleSubmitClick = () => {
+  // 실제 저장(API 호출)을 먼저 하고, 성공했을 때만 완료 안내 모달을 띄운다
+  const handleSubmitClick = async () => {
     if (!canSubmit) return;
-    setShowCompleteInfo(true);
-  };
-
-  // 완료 안내 모달에서 "확인"을 눌렀을 때 실제로 메모를 저장하고 모달을 닫는다
-  const handleConfirmComplete = () => {
-    onSubmit({
-      title: title.trim(),
-      content: content.trim(),
-      category,
-      date: date.replaceAll("-", "."),
-    });
+    setSubmitError(null);
+    setIsSubmitting(true);
+    try {
+      await onSubmit({
+        title: title.trim(),
+        content: content.trim(),
+        category,
+        date: date.replaceAll("-", "."),
+      });
+      setShowCompleteInfo(true);
+    } catch (err) {
+      setSubmitError(getErrorMessage(err));
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -121,7 +128,7 @@ export const MemoFormModal = ({
             <TagDropdown
               selectedTag={selectedTag}
               onSelectTag={setSelectedTag}
-              buttonBgClass="bg-blue-02"
+              unselectedBgClass="bg-blue-02"
             />
             <img src={fieldIcon} alt="구분선" className="h-[52px] w-[3px]" />
             <input
@@ -142,6 +149,12 @@ export const MemoFormModal = ({
           />
         </div>
 
+        {submitError && (
+          <p className="m-0 w-[480px] max-w-[calc(100vw-32px)] text-[13px] text-red-01">
+            {submitError}
+          </p>
+        )}
+
         {/* 메모 카드와 분리된 하단 액션 바 (카드와 같은 비율로 축소) */}
         <div className="mt-2 flex h-11 w-[480px] max-w-[calc(100vw-32px)] gap-3">
           <button
@@ -158,9 +171,9 @@ export const MemoFormModal = ({
             disabled={!canSubmit}
             className={`h-full flex-1 cursor-pointer rounded-xl border-none text-sm
               font-semibold text-white-00 disabled:cursor-not-allowed disabled:opacity-60
-              ${canSubmit ? "bg-[#1B4EF5]" : "bg-blue-03"}`}
+              ${canSubmit || isSubmitting ? "bg-[#1B4EF5]" : "bg-blue-03"}`}
           >
-            {submitLabel}
+            {isSubmitting ? "저장 중..." : submitLabel}
           </button>
         </div>
       </div>
@@ -189,13 +202,13 @@ export const MemoFormModal = ({
         />
       )}
 
-      {/* 작성 완료 안내 모달 */}
+      {/* 작성 완료 안내 모달 (실제 저장이 끝난 뒤에만 뜬다) */}
       {showCompleteInfo && (
         <ConfirmModal
           title="작성이 완료되었습니다"
           description="메인 화면에서 작성한 메모를 확인할 수 있어요."
           confirmText="확인"
-          onConfirm={handleConfirmComplete}
+          onConfirm={onClose}
         />
       )}
     </div>
