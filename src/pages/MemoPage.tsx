@@ -12,7 +12,7 @@ import { ConfirmModal } from "../components/Memo/ConfirmModal"; // 👈 삭제 �
 import { MemoFormModal } from "../components/Memo/MemoFormModal"; // 👈 메모 작성 모달 추가
 import { fetchMemos, createMemo, updateMemo, deleteMemo } from "../api/memos";
 import { getErrorMessage } from "../api/client";
-import { toApiCategory, toMemoItem } from "../utils/memoMapper";
+import { toApiCategory, toApiDate, toMemoItem } from "../utils/memoMapper";
 
 interface MemoPageProps {
   onProfileClick: () => void;
@@ -77,6 +77,7 @@ export const MemoPage = ({ onProfileClick }: MemoPageProps) => {
       await updateMemo(Number(id), {
         title: target.title,
         content: target.content,
+        date: toApiDate(target.date),
         category: toApiCategory(target.category),
         isPinned: nextPinned,
       });
@@ -121,6 +122,7 @@ export const MemoPage = ({ onProfileClick }: MemoPageProps) => {
     const dto = await createMemo({
       title: memo.title,
       content: memo.content,
+      date: toApiDate(memo.date),
       category: toApiCategory(memo.category),
       isPinned: false,
     });
@@ -139,6 +141,7 @@ export const MemoPage = ({ onProfileClick }: MemoPageProps) => {
     const dto = await updateMemo(Number(editingMemo.id), {
       title: memo.title,
       content: memo.content,
+      date: toApiDate(memo.date),
       category: toApiCategory(memo.category),
       isPinned: editingMemo.isPinned,
     });

@@ -23,6 +23,7 @@ export interface MemoListData {
 export interface MemoRequestBody {
   title: string;
   content: string;
+  date: string;
   category: MemoApiCategory;
   isPinned: boolean;
 }

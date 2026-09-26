@@ -16,6 +16,8 @@ const LOCAL_TO_API_CATEGORY: Record<MemoItem["category"], MemoApiCategory> = {
 export const toApiCategory = (category: MemoItem["category"]): MemoApiCategory =>
   LOCAL_TO_API_CATEGORY[category];
 
+export const toApiDate = (date: string): string => date.replaceAll(".", "-");
+
 export const toMemoItem = (dto: MemoDto): MemoItem => ({
   id: String(dto.id),
   title: dto.title,
